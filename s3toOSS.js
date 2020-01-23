@@ -34,7 +34,7 @@ function transferOneFile(s3_file_name, f_header, f_stream){
 				//I already have buckets now, so am I able to just upload to those now?
         objectApi.uploadObject(config.forge.forge_bucket, s3_file_name, f_header.ContentLength, f_stream, {}, oAuth2Leg, oAuth2Leg.getCredentials()). then(
             (res) => {
-                resolved(res);
+                resolve(res);
             }, 
             (err) => {
                 reject(err);
@@ -138,18 +138,20 @@ async function main(){
                     //https://forge.autodesk.com/blog/nailing-large-files-uploads-forge-resumable-api
                 }else{
                     const forge_token = await getForge2Token();
-                    const uploadRes = await transferOneFile(key, f_header, f_stream);
+		    if(forge_token){
+                    	     const uploadRes = await transferOneFile(key, f_header, f_stream);
 
-                    if(uploadRes){
-                        console.log('Transfer one S3 file to Forge OSS Succeeded! ');
+			    if(uploadRes){
+				console.log('Transfer one S3 file to Forge OSS Succeeded! ');
 
-                        if(sourceFileSha1 == uploadRes.body.sha1)
-                            console.log('File integrity is correct', key);
-                        else  
-                            console.log('file integrity is wrong!', key);
-                    }
-                    else
-                        console.log('transfer one S3 file to Forge OSS failed!');   
+				if(sourceFileSha1 == uploadRes.body.sha1)
+				    console.log('File integrity is correct', key);
+				else  
+				    console.log('file integrity is wrong!', key);
+			    }
+			    else
+				console.log('transfer one S3 file to Forge OSS failed!'); 
+		    }
                 }
             }
         }
