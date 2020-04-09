@@ -31,7 +31,6 @@ function transferOneFile(s3_file_name, f_header, f_stream){
         const objectApi = new forgeSDK.ObjectsApi();
 
         //Need to have a existing Forge OSS bucket
-				//I already have buckets now, so am I able to just upload to those now?
         objectApi.uploadObject(config.forge.forge_bucket, s3_file_name, f_header.ContentLength, f_stream, {}, oAuth2Leg, oAuth2Leg.getCredentials()). then(
             (res) => {
                 resolve(res);
@@ -54,7 +53,7 @@ function getForge2Token(){
     });
 }
 
-// ??? Need to figure out what this code means
+
 //Do not install via npm install... 
 //The crypto module provides cryptographic functionality that includes a set of wrappers for OpenSSL's hash, HMAC, cipher, decipher, sign, and verify functions.
 function sourceFileSha1(f_stream){
